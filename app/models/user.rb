@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
 	validates :password_confirmation, presence: true
 	before_save { |user| user.email = email.downcase }
 	before_save :create_remember_token
-	
+	default_scope order: 'id'
     def feed
     # Это предварительное решение. См. полную реализацию в "Following users".
     Micropost.where("user_id = ?", id)
