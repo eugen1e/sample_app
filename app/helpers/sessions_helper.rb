@@ -17,6 +17,12 @@ module SessionsHelper
   def signed_in?
     !current_user.nil?
   end
+
+  def signed_in_user
+    store_location
+    redirect_to signin_url, notice: "Please sign in." unless signed_in?
+  end
+
   def sign_out
     self.current_user = nil
     cookies.delete(:remember_token)
@@ -30,4 +36,6 @@ module SessionsHelper
   def store_location
     session[:return_to] = request.url
   end
+
+
 end

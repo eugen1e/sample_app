@@ -8,10 +8,13 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  password_digest :string(255)
+#  remember_token  :string(255)
+#  admin           :boolean          default(FALSE)
 #
 
 class User < ActiveRecord::Base
 	attr_accessible :email, :name, :password, :password_confirmation
+	has_many :microposts, dependent: :destroy
 	has_secure_password
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :name, presence: true, length: { maximum: 50 }
@@ -22,9 +25,14 @@ class User < ActiveRecord::Base
 	before_save { |user| user.email = email.downcase }
 	before_save :create_remember_token
 	
-    private
+    def feed
+    # Это предварительное решение. См. полную реализацию в "Following users".
+    Micropost.where("user_id = ?", id)
+  	end
 
-    def create_remember_token
-      self.remember_token = SecureRandom.urlsafe_base64
-    end
+    private
+	    def create_remember_token
+	      self.remember_token = SecureRandom.urlsafe_base64
+	    end
+
 end
